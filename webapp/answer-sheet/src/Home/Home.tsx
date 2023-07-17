@@ -1,40 +1,22 @@
-import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 
-import Footer from '../Components/Footer';
 
 const cards = [1, 2];
 
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
 
 const APP_NAME = "Answer Sheet";
 
-const Home = () => (
-  <ThemeProvider theme={defaultTheme}>
-    <CssBaseline />
-    <AppBar position="relative">
-      <Toolbar>
-        <CameraIcon sx={{ mr: 2 }} />
-        <Typography variant="h6" color="inherit" noWrap>
-          {APP_NAME}
-        </Typography>
-      </Toolbar>
-    </AppBar>
+const Home = () => {
+  return (
     <main>
       {/* Hero unit */}
       <Box
@@ -92,8 +74,10 @@ const Home = () => (
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small">View</Button>
-                  <Button size="small">Edit</Button>
+                  <Link to="/answer">
+                    <Button size="small">Go</Button>
+                    <Button size="small">Summary</Button>
+                  </Link>
                 </CardActions>
               </Card>
             </Grid>
@@ -101,10 +85,7 @@ const Home = () => (
         </Grid>
       </Container>
     </main>
-    {/* Footer */}
-    <Footer />
-    {/* End footer */}
-  </ThemeProvider>
-);
+  );
+}
 
 export default Home;

@@ -17,16 +17,16 @@ const Copyright = () => (
 const Footer = () => (
   <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
     <Typography variant="h6" align="center" gutterBottom>
-      Footer
+      Keep up!
     </Typography>
-    <Typography
+    {/* <Typography
       variant="subtitle1"
       align="center"
       color="text.secondary"
       component="p"
     >
-      Something here to give the footer a purpose!
-    </Typography>
+      Keep up!
+    </Typography> */}
     <Copyright />
   </Box>
 );
