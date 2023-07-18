@@ -8,17 +8,75 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Link } from 'react-router-dom';
-
-
-const cards = [1, 2];
-
+import { useEffect, useState } from 'react';
+import { fetchAnswerSheet, fetchQuizzes } from '../services/fetch';
+import { Quiz, Sheet } from '../services/types';
+import { async } from 'q';
 
 const APP_NAME = "Answer Sheet";
 
 const Home = () => {
+  const [quizzes, setQuizzes] = useState([] as Quiz[]);
+  // const [sheets, setSheets] = useState([] as Sheet[]);
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      const fetchedQuizzes = await fetchQuizzes();
+
+      setQuizzes(fetchedQuizzes);
+    }
+
+    const fetchSheets = async () => {
+      // Fetch and set sheets
+      const quizzesPromises = quizzes.map(async (quiz) => {
+        const fetchedSheets = await fetchAnswerSheet(quiz.id);
+        quiz.sheets = fetchedSheets;
+        return quiz;
+      });
+      const updatedQuizzes = await Promise.all(quizzesPromises);
+      setQuizzes(updatedQuizzes);
+    }
+
+    fetchQuiz();
+    fetchSheets();
+  }, []);
+
+  const renderCards = () => (
+    quizzes.map((quiz) => (
+      <Grid item key={quiz.id} xs={12} sm={12} md={6}>
+        <Card
+          sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+        >
+          <CardMedia
+            component="div"
+            sx={{
+              // 16:9
+              pt: '56.25%',
+            }}
+            image="https://source.unsplash.com/random?wallpapers"
+          />
+          <CardContent sx={{ flexGrow: 1 }}>
+            <Typography gutterBottom variant="h5" component="h2">
+              {quiz.name}
+            </Typography>
+            <Typography>
+              {quiz.sheets ? quiz.sheets[0].name : "Not answered"} 
+              {/* Need to show the sheets infos */}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Link to="/answer">
+              <Button size="small">Go to latest sheet</Button>
+              <Button size="small">Summary</Button>
+            </Link>
+          </CardActions>
+        </Card>
+      </Grid>
+    ))
+  );
+
   return (
     <main>
-      {/* Hero unit */}
       <Box
         sx={{
           bgcolor: 'background.paper',
@@ -39,49 +97,12 @@ const Home = () => {
           <Typography variant="h5" align="center" color="text.secondary" paragraph>
             Practice makes perfect.
           </Typography>
-          {/* <Stack
-            sx={{ pt: 4 }}
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-          >
-            <Button variant="contained">Go</Button>
-          </Stack> */}
         </Container>
       </Box>
       <Container sx={{ py: 8 }} maxWidth="md">
         {/* End hero unit */}
         <Grid container spacing={4}>
-          {cards.map((card) => (
-            <Grid item key={card} xs={12} sm={12} md={6}>
-              <Card
-                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-              >
-                <CardMedia
-                  component="div"
-                  sx={{
-                    // 16:9
-                    pt: '56.25%',
-                  }}
-                  image="https://source.unsplash.com/random?wallpapers"
-                />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    Heading
-                  </Typography>
-                  <Typography>
-                    Quiz No.{card}.
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Link to="/answer">
-                    <Button size="small">Go</Button>
-                    <Button size="small">Summary</Button>
-                  </Link>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
+          { renderCards() }
         </Grid>
       </Container>
     </main>
